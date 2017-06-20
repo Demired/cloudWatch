@@ -8,9 +8,9 @@ import requests
 class Watch:
     info = {}
 
-    fpm_url = "http://127.0.0.1:80/fpm_ping"
+    fpm_url = "http://127.0.0.1:8000/fpm_ping"
 
-    nginx_url = "http://127.0.0.1:80/nginx_status"
+    nginx_url = "http://127.0.0.1:8000/nginx_status"
 
     post_url = ""
 
