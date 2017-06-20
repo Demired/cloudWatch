@@ -59,9 +59,8 @@ class Watch:
 
     def php_version(self):
         cmd = self.fpm_bin_path + " -v"
-
-        tmp = os.popen(cmd).readline()[0]
-        self.info['php_version'] = re.compile(r'[0-9].[0-9].[0-9]').match(tmp)
+        tmp = os.popen(cmd).readline()
+        self.info['php_version'] = re.findall('\d\.\d\.\d{,2}', tmp)[0]
 
 
 if __name__ == '__main__':
