@@ -31,8 +31,19 @@ class Watch:
         self.nginx_version()
 
     def cpu_info(self):
+        cpu_times_percent = psutil.cpu_times_percent()
+
         self.info['cpu_logical_count'] = psutil.cpu_count()
         self.info['cpu_count'] = psutil.cpu_count(logical=False)
+        self.info['cpu']['user'] = cpu_times_percent.user
+        self.info['cpu']['nice'] = cpu_times_percent.nice
+        self.info['cpu']['system'] = cpu_times_percent.system
+        self.info['cpu']['idle'] = cpu_times_percent.idle
+        self.info['cpu']['iowait'] = cpu_times_percent.iowait
+        self.info['cpu']['irq'] = cpu_times_percent.irq
+        self.info['cpu']['softirq'] = cpu_times_percent.softirq
+        self.info['cpu']['steal'] = cpu_times_percent.steal
+        self.info['cpu']['guest'] = cpu_times_percent.guest
 
     def disk_info(self):
         self.info['disk_partitions'] = psutil.disk_partitions()
@@ -49,10 +60,6 @@ class Watch:
         fpm = requests.get(self.fpm_ping_url, 'timeout=1')
         self.info['fpm_ok'] = fpm.status_code == requests.codes.ok
 
-    def __main__(self):
-        # requests.post(self.post_url, self.info, 'timeout=1')
-        print self.info
-
     def nginx_version(self):
         cmd = self.nginx_bin_path + " -v 2>&1|awk -F':' '{print $2}'|awk -F'/' '{print $2}'"
         self.info['nginx_version'] = os.popen(cmd).readlines()[0].strip()
@@ -62,6 +69,15 @@ class Watch:
         tmp = os.popen(cmd).readline()
         self.info['php_version'] = re.findall('\d\.\d\.\d{,2}', tmp)[0]
 
+    def memory_info(self):
+        memory = psutil.virtual_memory()
+        self.info['memory']['used'] = str(int(memory.used / 1024 / 1024)) + "M"
+        self.info['memory']['total'] = str(int(memory.total / 1024 / 1024)) + "M"
+        self.info['memory']['free'] = str(int(memory.free / 1024 / 1024)) + "M"
+
+    def __main__(self):
+        # requests.post(self.post_url, self.info, 'timeout=1')
+        print self.info
 
 if __name__ == '__main__':
     Watch().__main__()
