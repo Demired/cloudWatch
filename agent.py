@@ -35,15 +35,17 @@ class Watch:
 
         self.info['cpu_logical_count'] = psutil.cpu_count()
         self.info['cpu_count'] = psutil.cpu_count(logical=False)
-        self.info['cpu']['user'] = cpu_times_percent.user
-        self.info['cpu']['nice'] = cpu_times_percent.nice
-        self.info['cpu']['system'] = cpu_times_percent.system
-        self.info['cpu']['idle'] = cpu_times_percent.idle
-        self.info['cpu']['iowait'] = cpu_times_percent.iowait
-        self.info['cpu']['irq'] = cpu_times_percent.irq
-        self.info['cpu']['softirq'] = cpu_times_percent.softirq
-        self.info['cpu']['steal'] = cpu_times_percent.steal
-        self.info['cpu']['guest'] = cpu_times_percent.guest
+        cpu_info = {'user': cpu_times_percent.user,
+                    'nice': cpu_times_percent.nice,
+                    'system': cpu_times_percent.system,
+                    'idle': cpu_times_percent.idle,
+                    'iowait': cpu_times_percent.iowait,
+                    'irq': cpu_times_percent.irq,
+                    'softirq': cpu_times_percent.softirq,
+                    'steal': cpu_times_percent.steal,
+                    'guest': cpu_times_percent.guest
+                    }
+        self.info['cpu_info'] = cpu_info
 
     def disk_info(self):
         self.info['disk_partitions'] = psutil.disk_partitions()
@@ -70,14 +72,16 @@ class Watch:
         self.info['php_version'] = re.findall('\d\.\d\.\d{,2}', tmp)[0]
 
     def memory_info(self):
-        memory = psutil.virtual_memory()
-        self.info['memory']['used'] = str(int(memory.used / 1024 / 1024)) + "M"
-        self.info['memory']['total'] = str(int(memory.total / 1024 / 1024)) + "M"
-        self.info['memory']['free'] = str(int(memory.free / 1024 / 1024)) + "M"
+        virtual_memory = psutil.virtual_memory()
+        memory = {'used': str(int(virtual_memory.used / 1024 / 1024)) + "M",
+                  'total': str(int(virtual_memory.total / 1024 / 1024)) + "M",
+                  'free': str(int(virtual_memory.free / 1024 / 1024)) + "M"}
+        self.info['memory'] = memory
 
     def __main__(self):
         # requests.post(self.post_url, self.info, 'timeout=1')
         print self.info
+
 
 if __name__ == '__main__':
     Watch().__main__()
