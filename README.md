@@ -11,3 +11,19 @@
 ## 开发背景
 
 本大王手里有好几百个vps，每天早上起床就要扫一遍，重复的劳动就要交给机器去做
+
+## 环境配置
+
+```shell
+wget https://bootstrap.pypa.io/get-pip.py
+
+python get-pip.py
+
+yum install python-devel
+
+pip install psutil,requests
+```
+
+
+
+
