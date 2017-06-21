@@ -5,6 +5,7 @@ import psutil
 import requests
 import os
 import re
+# import time
 
 
 class Watch:
@@ -39,17 +40,32 @@ class Watch:
                     'nice': cpu_times_percent.nice,
                     'system': cpu_times_percent.system,
                     'idle': cpu_times_percent.idle,
-                    'iowait': cpu_times_percent.iowait,
-                    'irq': cpu_times_percent.irq,
-                    'softirq': cpu_times_percent.softirq,
-                    'steal': cpu_times_percent.steal,
-                    'guest': cpu_times_percent.guest
                     }
         self.info['cpu_info'] = cpu_info
 
     def disk_info(self):
-        self.info['disk_partitions'] = psutil.disk_partitions()
-        self.info['disk_usage'] = psutil.disk_usage('/')
+        disk_partitions = psutil.disk_partitions()
+
+        disk_info = {}
+        for disk in disk_partitions:
+            tmp_disk_usage = psutil.disk_usage(disk.mountpoint)
+
+            if tmp_disk_usage.total/1024/1024/1024 > 0:
+                disk_total = str(int(tmp_disk_usage.total / 1024 / 1024 / 1024)) + "G"
+            else:
+                disk_total = str(int(tmp_disk_usage.total / 1024 / 1024)) + "M"
+
+            if tmp_disk_usage.used/1024/1024/1024 > 0:
+                disk_usage = str(int(tmp_disk_usage.used / 1024 / 1024 / 1024)) + "G"
+            else:
+                disk_usage = str(int(tmp_disk_usage.used / 1024 / 1024)) + "M"
+
+            disk_info[disk.mountpoint] = {'total': disk_total,
+                                          'used': disk_usage,
+                                          'percent': tmp_disk_usage.percent,
+                                          'fstype': disk.fstype}
+
+        self.info['disk'] = disk_info
 
     def boot_time(self):
         self.info['boot_time'] = psutil.boot_time()
@@ -79,9 +95,11 @@ class Watch:
         self.info['memory'] = memory
 
     def __main__(self):
-        # requests.post(self.post_url, self.info, 'timeout=1')
+        # requests.post(self.post_url, self.info, 'timeout=5')
         print self.info
 
 
 if __name__ == '__main__':
+    # while 1:
     Watch().__main__()
+    # time.sleep(60*10)
