@@ -73,10 +73,9 @@ class Watch:
 
     def memory_info(self):
         virtual_memory = psutil.virtual_memory()
-        memory = {'used': virtual_memory.used,
-                  'total': virtual_memory.total,
-                  'free': virtual_memory.free}
-        self.info['memory'] = memory
+        self.info['memory_used'] = virtual_memory.used
+        self.info['memory_total'] = virtual_memory.total
+        self.info['memory_free'] = virtual_memory.free
 
     def __main__(self):
         # requests.post(self.post_url, self.info, 'timeout=5')
