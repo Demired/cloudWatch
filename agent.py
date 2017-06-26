@@ -33,19 +33,15 @@ class Watch:
 
     def cpu_info(self):
         cpu_times_percent = psutil.cpu_times_percent()
-
         self.info['cpu_logical_count'] = psutil.cpu_count()
         self.info['cpu_count'] = psutil.cpu_count(logical=False)
-        cpu_info = {'user': cpu_times_percent.user,
-                    'nice': cpu_times_percent.nice,
-                    'system': cpu_times_percent.system,
-                    'idle': cpu_times_percent.idle,
-                    }
-        self.info['cpu_info'] = cpu_info
+        self.info['user'] = cpu_times_percent.user
+        self.info['nice'] = cpu_times_percent.nice
+        self.info['system'] = cpu_times_percent.system
+        self.info['idle'] = cpu_times_percent.idle
 
     def disk_info(self):
         disk_partitions = psutil.disk_partitions()
-
         disk_info = {}
         for disk in disk_partitions:
             tmp_disk_usage = psutil.disk_usage(disk.mountpoint)
