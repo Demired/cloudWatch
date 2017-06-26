@@ -5,10 +5,6 @@ import psutil
 import requests
 import os
 import re
-import time
-
-
-# import time
 
 
 class Watch:
@@ -29,10 +25,11 @@ class Watch:
         self.cpu_info()
         self.disk_info()
         self.boot_time()
-        # self.nginx_status()
-        # self.fpm_status()
-        # self.php_version()
-        # self.nginx_version()
+        self.memory_info()
+        self.nginx_status()
+        self.fpm_status()
+        self.php_version()
+        self.nginx_version()
 
     def cpu_info(self):
         cpu_times_percent = psutil.cpu_times_percent()
@@ -91,6 +88,4 @@ class Watch:
 
 
 if __name__ == '__main__':
-    while 1:
-        Watch().__main__()
-        time.sleep(60*10)
+    Watch().__main__()
