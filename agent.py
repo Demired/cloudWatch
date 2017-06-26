@@ -5,6 +5,9 @@ import psutil
 import requests
 import os
 import re
+import time
+
+
 # import time
 
 
@@ -26,10 +29,10 @@ class Watch:
         self.cpu_info()
         self.disk_info()
         self.boot_time()
-        self.nginx_status()
-        self.fpm_status()
-        self.php_version()
-        self.nginx_version()
+        # self.nginx_status()
+        # self.fpm_status()
+        # self.php_version()
+        # self.nginx_version()
 
     def cpu_info(self):
         cpu_times_percent = psutil.cpu_times_percent()
@@ -49,22 +52,10 @@ class Watch:
         disk_info = {}
         for disk in disk_partitions:
             tmp_disk_usage = psutil.disk_usage(disk.mountpoint)
-
-            if tmp_disk_usage.total/1024/1024/1024 > 0:
-                disk_total = str(int(tmp_disk_usage.total / 1024 / 1024 / 1024)) + "G"
-            else:
-                disk_total = str(int(tmp_disk_usage.total / 1024 / 1024)) + "M"
-
-            if tmp_disk_usage.used/1024/1024/1024 > 0:
-                disk_usage = str(int(tmp_disk_usage.used / 1024 / 1024 / 1024)) + "G"
-            else:
-                disk_usage = str(int(tmp_disk_usage.used / 1024 / 1024)) + "M"
-
-            disk_info[disk.mountpoint] = {'total': disk_total,
-                                          'used': disk_usage,
+            disk_info[disk.mountpoint] = {'total': tmp_disk_usage.total,
+                                          'used': tmp_disk_usage.used,
                                           'percent': tmp_disk_usage.percent,
                                           'fstype': disk.fstype}
-
         self.info['disk'] = disk_info
 
     def boot_time(self):
@@ -89,9 +80,9 @@ class Watch:
 
     def memory_info(self):
         virtual_memory = psutil.virtual_memory()
-        memory = {'used': str(int(virtual_memory.used / 1024 / 1024)) + "M",
-                  'total': str(int(virtual_memory.total / 1024 / 1024)) + "M",
-                  'free': str(int(virtual_memory.free / 1024 / 1024)) + "M"}
+        memory = {'used': virtual_memory.used,
+                  'total': virtual_memory.total,
+                  'free': virtual_memory.free}
         self.info['memory'] = memory
 
     def __main__(self):
@@ -100,6 +91,6 @@ class Watch:
 
 
 if __name__ == '__main__':
-    # while 1:
-    Watch().__main__()
-    # time.sleep(60*10)
+    while 1:
+        Watch().__main__()
+        time.sleep(60*10)
