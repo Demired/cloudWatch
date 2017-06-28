@@ -21,7 +21,6 @@ class Watch:
 
     post_url = ""
 
-    # 检查时间
     def __init__(self):
         self.cpu_info()
         self.disk_info()
