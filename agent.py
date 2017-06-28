@@ -4,6 +4,7 @@
 import psutil
 import requests
 import os
+import json
 import re
 
 
@@ -49,7 +50,8 @@ class Watch:
                                           'used': tmp_disk_usage.used,
                                           'percent': tmp_disk_usage.percent,
                                           'fstype': disk.fstype}
-        self.info['disk'] = disk_info
+
+        self.info['disk'] = json.dumps(disk_info)
 
     def boot_time(self):
         self.info['boot_time'] = psutil.boot_time()
@@ -78,7 +80,7 @@ class Watch:
         self.info['memory_free'] = virtual_memory.free
 
     def __main__(self):
-        # requests.post(self.post_url, self.info, 'timeout=5')
+        print requests.post(self.post_url, self.info, 'timeout=5').content
         print self.info
 
 
